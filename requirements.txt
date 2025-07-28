@@ -1,0 +1,11 @@
+# requirements.txt
+
+# Framework para a API web
+fastapi
+j
+# Servidor para rodar a API
+uvicorn[standard]
+
+# Bibliotecas para o web scraping
+requests
+beautifulsoup4
