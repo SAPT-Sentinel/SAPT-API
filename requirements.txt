@@ -8,11 +8,20 @@ uvicorn[standard]
 requests
 beautifulsoup4
 
-# Para JWT e criptografia
+# Para JWT (tokens) e criptografia
 python-jose[cryptography]
 
-# Para hash de senhas
+# Para hash (criptografia) de senhas
 passlib[bcrypt]
 
-# Necessário para o formulário de login do FastAPI
+# Necessário para o formulário de login do FastAPI (OAuth2PasswordRequestForm)
 python-multipart
+
+# Para carregar variáveis de ambiente do arquivo .env
+python-dotenv
+
+# ORM para interagir com o banco de dados
+SQLAlchemy
+
+# Driver para conectar o SQLAlchemy ao MySQL
+PyMySQL
