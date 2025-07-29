@@ -16,8 +16,10 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 
-# Monta a URL de conexão para o MySQL usando o driver PyMySQL
-SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# --- MUDANÇA AQUI ---
+# Monta a URL de conexão para o PostgreSQL usando o driver psycopg2
+SQLALCHEMY_DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# --- FIM DA MUDANÇA ---
 
 # Cria o "motor" do SQLAlchemy, que gerencia a conexão com o banco
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

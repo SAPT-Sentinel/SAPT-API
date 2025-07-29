@@ -25,3 +25,6 @@ SQLAlchemy
 
 # Driver para conectar o SQLAlchemy ao MySQL
 PyMySQL
+
+# Driver para conectar o SQLAlchemy ao PostgreSQL
+psycopg2-binary
