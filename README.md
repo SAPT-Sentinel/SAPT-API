@@ -1,40 +1,53 @@
 SAPT - API de Análise de Transparência
-Uma API em FastAPI que executa scripts de web scraping e é protegida por autenticação de usuário via token JWT, com persistência em banco de dados MySQL.
+ 
 
-Pré-requisitos
-Python 3.10+
+Guia de Instalação e Execução
+Siga os passos abaixo para configurar e rodar o projeto no seu ambiente local.
 
-Um servidor MySQL rodando localmente
+1. Pré-requisitos
+Python 3.10 ou superior.
 
-Como Rodar o Projeto
+Um servidor MySQL instalado e rodando na sua máquina.
 
-Instale as dependências:
-    pip install -r requirements.txt
+2. Configuração do Ambiente
 
-Configure suas variáveis de ambiente:
+Crie e ative um ambiente virtual (altamente recomendado):
 
-Copie o arquivo de exemplo .env.example para um novo arquivo chamado .env.
 
-# No Windows (usando PowerShell):
-copy .env.example .env
-# No macOS/Linux:
-cp .env.example .env
+Instale as dependências do projeto:
+pip install -r requirements.txt
 
-Abra o arquivo .env e preencha os valores que estão em branco (como JWT_SECRET_KEY e DB_PASSWORD) com suas próprias configurações locais.
+3. Configuração do Banco de Dados e Segredos
+Copie o arquivo de exemplo .env.example para um novo arquivo chamado .env:
+Este arquivo guardará suas configurações locais e segredos.
+
+
+Edite o arquivo .env:
+Abra o arquivo .env com um editor de texto e preencha os valores em branco:
+
+JWT_SECRET_KEY: Gere uma chave secreta forte. Pode ser qualquer string longa e aleatória.
+
+DB_PASSWORD: A senha do seu usuário do MySQL.
 
 Crie o banco de dados no seu MySQL:
--Conecte-se ao seu MySQL e execute: CREATE DATABASE sapt_db;
+Conecte-se ao seu servidor MySQL e execute o seguinte comando:
 
-Inicie a API:
-->    uvicorn main:app --reload
+CREATE DATABASE sapt_db;
+
+4. Execução da Aplicação
+Inicie o servidor da API:
+Com o ambiente virtual ativado, execute o comando:
+
+uvicorn main:app --reload
 
 A API estará rodando em http://127.0.0.1:8000.
 
-Crie o primeiro usuário:
+Crie o primeiro usuário administrador:
+Para poder usar os endpoints protegidos, você precisa criar um usuário. Abra um novo terminal, ative o mesmo ambiente virtual e execute o script:
 
-Abra um novo terminal (com o ambiente virtual ativado) e execute o script de criação de usuário:
-->    python create_first_user.py
+python create_first_user.py
 
-Siga as instruções para criar seu usuário administrador.
+Siga as instruções no terminal para definir o nome de usuário, e-mail e senha.
 
-Agora você pode acessar a documentação interativa em http://127.0.0.1:8000/docs para fazer login e testar os endpoints.
+5. Testando a API
+Agora, você pode acessar a documentação interativa em http://127.0.0.1:8000/docs para fazer login (POST /token) e testar todos os outros endpoints da aplicação.

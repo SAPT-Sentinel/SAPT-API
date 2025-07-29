@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pydantic import BaseModel
-from typing import Union
+from typing import Union, List, Optional
+from datetime import datetime
 
 # --- Schemas para o Token JWT ---
 class Token(BaseModel):
@@ -18,15 +19,81 @@ class UserBase(BaseModel):
     full_name: Union[str, None] = None
 
 class UserCreate(UserBase):
-    # Para criar um usuário, a senha é necessária
     password: str
 
 class User(UserBase):
-    # Para ler um usuário, não queremos expor a senha
     id: int
     disabled: bool
 
     class Config:
-        # Antigo 'orm_mode = True', agora 'from_attributes = True' no Pydantic v2
-        # Permite que o Pydantic leia os dados diretamente de um objeto ORM
+        from_attributes = True
+
+# --- Schemas para Critério ---
+class CriterioBase(BaseModel):
+    codigo: str
+    nome_criterio: str
+    dominio: str
+    descricao: Optional[str] = None
+
+class CriterioCreate(CriterioBase):
+    pass
+
+class Criterio(CriterioBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+# --- Schemas para Resultado da Análise ---
+class ResultadoAnaliseBase(BaseModel):
+    passou: Optional[bool] = None
+    detalhes: Optional[str] = None
+    pontuacao: Optional[float] = None
+
+# --- NOVO SCHEMA ADICIONADO ---
+class ResultadoAnaliseUpdate(BaseModel):
+    # Usamos Optional para que o utilizador possa atualizar
+    # apenas um campo se quiser.
+    passou: Optional[bool] = None
+    detalhes: Optional[str] = None
+
+class ResultadoAnaliseCreate(ResultadoAnaliseBase):
+    pass
+
+class ResultadoAnalise(ResultadoAnaliseBase):
+    id: int
+    criterio: Criterio
+
+    class Config:
+        from_attributes = True
+
+class ResultadoAnaliseCreate(ResultadoAnaliseBase):
+    pass
+
+class ResultadoAnalise(ResultadoAnaliseBase):
+    id: int
+    criterio: Criterio
+
+    class Config:
+        from_attributes = True
+
+# --- Schemas para Análise (Histórico) ---
+class AnaliseBase(BaseModel):
+    url_avaliada: str
+
+class AnaliseCreate(AnaliseBase):
+    pass
+
+# --- NOVO SCHEMA ADICIONADO ---
+class AnaliseUpdate(BaseModel):
+    # Define quais campos podem ser atualizados.
+    # Neste caso, apenas a URL.
+    url_avaliada: str
+
+class Analise(AnaliseBase):
+    id: int
+    data_analise: datetime
+    resultados: List[ResultadoAnalise] = []
+
+    class Config:
         from_attributes = True
