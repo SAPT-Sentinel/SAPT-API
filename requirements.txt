@@ -1,11 +1,18 @@
-# requirements.txt
-
 # Framework para a API web
 fastapi
-j
+
 # Servidor para rodar a API
 uvicorn[standard]
 
 # Bibliotecas para o web scraping
 requests
 beautifulsoup4
+
+# Para JWT e criptografia
+python-jose[cryptography]
+
+# Para hash de senhas
+passlib[bcrypt]
+
+# Necessário para o formulário de login do FastAPI
+python-multipart
