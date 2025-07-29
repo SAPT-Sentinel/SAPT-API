@@ -1,0 +1,56 @@
+# Ficheiro de configuração para o Render "Infrastructure as Code"
+# Este plano define os serviços necessários para rodar a API e o banco de dados.
+
+services:
+  # --- Serviço da API (Web Service) ---
+  # Este serviço irá rodar o seu código Python com FastAPI.
+  - type: web
+    name: sapt-api # O nome da sua aplicação no Render.
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      # --- Variáveis de Ambiente para a API ---
+      # Chave secreta para os tokens JWT. O Render irá gerar um valor seguro automaticamente.
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+
+      # --- Conexão com o Banco de Dados ---
+      # As variáveis abaixo são preenchidas automaticamente pelo Render com os
+      # dados do serviço de banco de dados 'sapt-postgres' definido mais abaixo.
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: sapt-postgres
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pserv
+          name: sapt-postgres
+          property: port
+      - key: DB_USER
+        fromService:
+          type: pserv
+          name: sapt-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: sapt-postgres
+          property: password
+      - key: DB_NAME
+        fromService:
+          type: pserv
+          name: sapt-postgres
+          property: database
+
+  # --- Serviço do Banco de Dados (PostgreSQL) ---
+  # Este serviço cria e gere um banco de dados PostgreSQL para a sua aplicação.
+  - type: pserv # 'pserv' significa "Private Service" (Serviço Privado)
+    name: sapt-postgres # O nome do seu serviço de banco de dados.
+    runtime: postgres # Especifica que queremos um banco de dados PostgreSQL.
+    plan: free # Utiliza o plano gratuito do Render.
