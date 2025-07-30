@@ -19,6 +19,7 @@ import crud
 import models
 import schemas
 from schemas import LoginRequest
+from schemas import AnaliseRequest
 import security
 from database import engine, get_db
 
@@ -85,19 +86,17 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current
 
 @app.post("/api/analise", response_model=schemas.Analise)
 async def analisar_e_salvar_portal(
-    url: str = Query(..., min_length=15, description="A URL completa do portal a ser analisado."),
+    analise_request: AnaliseRequest,
     current_user: models.User = Depends(security.get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Cria uma nova análise, salva no banco e retorna o resultado."""
     try:
-        resultado_json = executar_analise_completa(url)
+        resultado_json = executar_analise_completa(analise_request.url)
         analise_salva = crud.salvar_resultado_completo_analise(db=db, resultado_json=resultado_json, user=current_user)
         return analise_salva
     except HTTPException as e:
         raise e
     except Exception as e:
-        print(f"Erro inesperado no servidor: {e}")
         raise HTTPException(status_code=500, detail=f"Ocorreu um erro interno inesperado: {e}")
 
 @app.get("/api/analises/", response_model=List[schemas.Analise])
@@ -105,7 +104,7 @@ def ler_historico_de_analises(
     skip: int = 0, 
     limit: int = 100, 
     current_user: models.User = Depends(security.get_current_active_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Retorna uma lista com o histórico de TODAS as análises realizadas no sistema."""
     analises = crud.get_all_analises(db, skip=skip, limit=limit)

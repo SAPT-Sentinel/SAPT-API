@@ -49,6 +49,9 @@ class Criterio(CriterioBase):
         from_attributes = True
 
 # --- Schemas para Resultado da Análise ---
+class AnaliseRequest(BaseModel):
+    url: str
+    
 class ResultadoAnaliseBase(BaseModel):
     passou: Optional[bool] = None
     detalhes: Optional[str] = None
