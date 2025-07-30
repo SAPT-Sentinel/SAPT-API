@@ -1,53 +1,92 @@
-SAPT - API de Análise de Transparência
- 
+# SAPT - API de Análise de Transparência
 
-Guia de Instalação e Execução
+## 📦 Guia de Instalação e Execução
+
 Siga os passos abaixo para configurar e rodar o projeto no seu ambiente local.
 
-1. Pré-requisitos
-Python 3.10 ou superior.
+---
 
-Um servidor MySQL instalado e rodando na sua máquina.
+### ✅ Pré-requisitos
 
-2. Configuração do Ambiente
+- Python 3.10 ou superior  
+- Um servidor **MySQL** instalado e rodando na sua máquina
 
-Crie e ative um ambiente virtual (altamente recomendado):
+---
 
+### ⚙️ Configuração do Ambiente
 
-Instale as dependências do projeto:
-pip install -r requirements.txt
+1. Crie e ative um ambiente virtual (altamente recomendado):
 
-3. Configuração do Banco de Dados e Segredos
-Copie o arquivo de exemplo .env.example para um novo arquivo chamado .env:
-Este arquivo guardará suas configurações locais e segredos.
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   .\venv\Scripts\activate    # Windows
+   ```
 
+2. Instale as dependências do projeto:
 
-Edite o arquivo .env:
-Abra o arquivo .env com um editor de texto e preencha os valores em branco:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-JWT_SECRET_KEY: Gere uma chave secreta forte. Pode ser qualquer string longa e aleatória.
+---
 
-DB_PASSWORD: A senha do seu usuário do MySQL.
+### 🔐 Configuração do Banco de Dados e Segredos
 
-Crie o banco de dados no seu MySQL:
-Conecte-se ao seu servidor MySQL e execute o seguinte comando:
+1. Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`:
 
-CREATE DATABASE sapt_db;
+   ```bash
+   cp .env.example .env
+   ```
 
-4. Execução da Aplicação
-Inicie o servidor da API:
-Com o ambiente virtual ativado, execute o comando:
+2. Edite o arquivo `.env` com um editor de texto e preencha os valores em branco:
 
-uvicorn main:app --reload
+   - `JWT_SECRET_KEY`: Gere uma chave secreta forte (qualquer string longa e aleatória).
+   - `DB_PASSWORD`: A senha do seu usuário do MySQL.
 
-A API estará rodando em http://127.0.0.1:8000.
+3. Crie o banco de dados no seu MySQL:
 
-Crie o primeiro usuário administrador:
-Para poder usar os endpoints protegidos, você precisa criar um usuário. Abra um novo terminal, ative o mesmo ambiente virtual e execute o script:
+   ```sql
+   CREATE DATABASE sapt_db;
+   ```
 
+---
+
+### 🚀 Execução da Aplicação
+
+1. Inicie o servidor da API (com o ambiente virtual ativado):
+
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+2. A API estará rodando em:  
+   👉 http://127.0.0.1:8000
+
+---
+
+### 👤 Crie o Primeiro Usuário Administrador
+
+Para poder usar os endpoints protegidos, você precisa criar um usuário.  
+Abra um novo terminal, ative o mesmo ambiente virtual e execute:
+
+```bash
 python create_first_user.py
+```
 
-Siga as instruções no terminal para definir o nome de usuário, e-mail e senha.
+Siga as instruções no terminal para definir:
 
-5. Testando a API
-Agora, você pode acessar a documentação interativa em http://127.0.0.1:8000/docs para fazer login (POST /token) e testar todos os outros endpoints da aplicação.
+- Nome de usuário
+- E-mail
+- Senha
+
+---
+
+### 🧪 Testando a API
+
+Acesse a documentação interativa via Swagger:  
+👉 http://127.0.0.1:8000/docs
+
+Use o endpoint `POST /token` para login e então teste os demais endpoints da aplicação.
+
+---
