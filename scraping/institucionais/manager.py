@@ -21,13 +21,14 @@ from .criterio_2_8 import avaliar as avaliar_2_8
 from .criterio_2_9 import avaliar as avaliar_2_9
 
 def encontrar_link_por_palavra(soup, palavras):
-    """Procura o primeiro link (href) que contenha qualquer uma das palavras-chave"""
+    """Procura o primeiro link (href) cujo texto ou href contenha qualquer palavra-chave"""
     links = soup.find_all("a", href=True)
     for link in links:
-        texto = (link.get_text() or "").lower()
+        # Coleta todo o texto visível dentro do <a>, incluindo tags filhas como <p>, <span>
+        texto_completo = " ".join(link.stripped_strings).lower()
         href = link['href'].lower()
         for palavra in palavras:
-            if palavra in texto or palavra in href:
+            if palavra in texto_completo or palavra in href:
                 return link['href']
     return None
 
