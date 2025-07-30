@@ -26,6 +26,7 @@ from database import engine, get_db
 from scraping import scraper
 import requests
 from bs4 import BeautifulSoup
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -68,7 +69,7 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(security.get_current_active_user)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Nome de usuário já registrado")
@@ -153,3 +154,18 @@ def apagar_analise(
     if db_analise is None:
         raise HTTPException(status_code=404, detail="Análise não encontrada")
     return {"detail": "Análise apagada com sucesso"}
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost:5173",  # seu frontend local
+    "https://sapt-api.onrender.com",  # opcionalmente, o próprio domínio da API
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # ou use ["*"] para permitir qualquer origem (menos seguro)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
