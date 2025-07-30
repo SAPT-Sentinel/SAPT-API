@@ -160,6 +160,7 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:5173",  # seu frontend local
     "https://sapt-api.onrender.com",  # opcionalmente, o próprio domínio da API
+    "https://sapt-ui-gap5.vercel.app",
 ]
 
 app.add_middleware(
