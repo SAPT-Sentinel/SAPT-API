@@ -1,22 +1,10 @@
-"""
-loader.py
-
-Módulo responsável por carregar o HTML de um portal a partir de sua URL
-e repassar o conteúdo para o manager da categoria correspondente (ex: 'inicial').
-
-Requisitos: requests, beautifulsoup4
-
-Exemplo de uso:
-    python -m scraping.loader https://www.exemplo.gov.br
-"""
+# scraper.py
 
 import sys
-import os
 from pathlib import Path
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 import requests
-from scraping.utils.persist import salvar_em_json
+from urllib.parse import urlparse
 
 # Adiciona a raiz do projeto ao sys.path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -30,8 +18,7 @@ def carregar_html(url):
         soup = BeautifulSoup(html, 'html.parser')
         return html, soup
     except Exception as e:
-        print(f"[ERRO] Não foi possível carregar a URL: {e}")
-        sys.exit(1)
+        raise RuntimeError(f"[ERRO] Não foi possível carregar a URL: {e}")
 
 def listar_dominios():
     """Lista os diretórios de domínio que contêm um manager.py"""
@@ -50,31 +37,22 @@ def importar_manager(dominio_nome):
         print(f"[ERRO] Não foi possível importar o manager de {dominio_nome}: {e}")
         return None
 
-def main():
-    # Verifica se URL foi passada por argumento, senão solicita
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-    else:
-        url = input("Digite a URL do portal a ser avaliado: ").strip()
-
+def executar_scraping(url: str) -> dict:
+    """Executa o scraping para todos os domínios encontrados."""
     html, soup = carregar_html(url)
     dominios = listar_dominios()
 
-    if not dominios:
-        print("[!] Nenhum domínio com manager.py encontrado.")
-        return
-
-    print(f"\n🔍 Avaliando: {url}")
-    print(f"📁 Domínios detectados: {dominios}")
+    resultado_final = {"urlAvaliada": url, "dominios": {}}
 
     for dominio in dominios:
-        print(f"\n▶ Avaliando domínio: {dominio}")
         manager = importar_manager(dominio)
         if manager and hasattr(manager, 'avaliar'):
-            resultados = manager.avaliar(html, soup, url)
-            salvar_em_json(resultados, url, dominio)
+            try:
+                resultados = manager.avaliar(html, soup, url)
+                resultado_final["dominios"][dominio] = resultados
+            except Exception as e:
+                print(f"[ERRO] ao avaliar domínio '{dominio}': {e}")
         else:
-            print(f"[!] Manager de '{dominio}' não possui função avaliar().")
+            print(f"[AVISO] Manager de '{dominio}' não possui função avaliar().")
 
-if __name__ == "__main__":
-    main()
+    return resultado_final

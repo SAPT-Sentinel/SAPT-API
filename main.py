@@ -23,7 +23,7 @@ from schemas import AnaliseRequest
 import security
 from database import engine, get_db
 
-from scraping.inicial import manager as inicial_manager
+from scraping import scraper
 import requests
 from bs4 import BeautifulSoup
 
@@ -39,15 +39,7 @@ app = FastAPI(
 # --- 3. LÓGICA DE NEGÓCIO (SCRAPING) ---
 def executar_analise_completa(url: str) -> Dict[str, Any]:
     try:
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        html = response.text
-        soup = BeautifulSoup(html, 'html.parser')
-        
-        resultado_final = {"urlAvaliada": url, "dominios": {}}
-        resultados_inicial = inicial_manager.avaliar(html, soup, url)
-        resultado_final["dominios"]["inicial"] = resultados_inicial
-        return resultado_final
+        return scraper.executar_scraping(url)
     except requests.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Falha ao carregar a URL: {e}")
     except Exception as e:
